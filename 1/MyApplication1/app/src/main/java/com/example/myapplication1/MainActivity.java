@@ -1,5 +1,6 @@
 package com.example.myapplication1;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -10,13 +11,16 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.text.DecimalFormat;
@@ -30,29 +34,17 @@ public class MainActivity extends AppCompatActivity {
     private boolean aBoolean =true;
     private NotificationManager manger;
     public static final int TYPE_Normal = 1;
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //四个参数的含义:
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v == editText) {
+            menu.add(0, 1, 0, "复制");
+            menu.add(0, 2, 0, "粘贴");
+            menu.add(0, 3, 0, "关闭");
 
-        // 1.group的id;2.item的id;3.是否排序;4.将要显示的内容
-        menu.add(0, 1, 0, "复制");
-        menu.add(0, 2, 0, "粘贴");
-        menu.add(0, 3, 0, "关闭");
-//        menu.add(0, 4, 0, "河北大学艺术学院");
-//        menu.add(0, 5, 0, "河北大学质检学院");
-//        SubMenu sub = menu.addSubMenu("子菜单");
-//        sub.add(0, 5, 0, "子菜单一");
-//        sub.add(0, 6, 0, "子菜单二");
-//        sub.add(0, 7, 0, "子菜单三");
-//
-//        menu.add(1, 6, 0, "河北大学计算机学院");
-//        menu.add(1, 7, 1, "河北大学电信学院");
-//        menu.add(1, 8, 5, "河北大学新闻学院");
-//        menu.add(1, 9, 2, "河北大学艺术学院");
-//        menu.add(1, 10, 3, "河北大学质检学院");
+        }
 
-        return true;
+        super.onCreateContextMenu(menu, v, menuInfo);
     }
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onContextItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case 1:
                 bzz=(String)editText.getText().toString().subSequence(1, editText.getText().toString().length());
@@ -73,15 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
         return true;
-    }
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (v == textView) {
-            menu.add(0, 1, 0, "复制");
-            menu.add(0, 2, 0, "粘贴");
-
-        }
-
-        super.onCreateContextMenu(menu, v, menuInfo);
     }
     private View.OnClickListener lisenter = new View.OnClickListener() {//侦听器
         @Override
@@ -208,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                         operator="";
                         n1=0;
                         n2=0;
+                        Toast.makeText(getApplicationContext(),"长按换个计算器",Toast.LENGTH_LONG).show();
                         break;
                     }
                     case R.id.buttontui:
@@ -632,6 +616,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                         aBoolean=false;
+                        Toast.makeText(getApplicationContext(),"长按发现更多功能",Toast.LENGTH_LONG).show();
                         if(Result==666)
                         {simpleNotify();}
                         break;
@@ -643,6 +628,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
     private void simpleNotify(){
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
         //Ticker是状态栏显示的提示
@@ -659,7 +645,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setNumber(2);
         builder.setSmallIcon(R.mipmap.ic_launcher);
         builder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.push));
-        Intent intent = new Intent(this,SettingsActivity.class);
+        Intent intent = new Intent(this,radiobutton.class);
         PendingIntent pIntent = PendingIntent.getActivity(this,1,intent,0);
         builder.setContentIntent(pIntent);
         //设置震动
@@ -686,6 +672,46 @@ public class MainActivity extends AppCompatActivity {
                 }).create().show();
 
     }
+    private void showPopupMenu(View view) {
+        // View当前PopupMenu显示的相对View的位置
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        // menu布局
+        popupMenu.getMenuInflater().inflate(R.menu.main, popupMenu.getMenu());
+        // menu的item点击事件
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_SHORT).show();
+                if( item.getTitle().equals("复制"))
+                {
+                    bzz=(String)editText.getText().toString().subSequence(1, editText.getText().toString().length());
+                    editText.setText("");
+                    textView.setText("");
+                    operator="";
+                    s="";
+
+                }
+                else if( item.getTitle().equals("粘贴"))
+                {
+                    textView.setText("");
+                    editText.setText(bzz);
+                    operator="";
+                    s="";
+
+                }
+                else if ( item.getTitle().equals("关闭"))
+                {
+                    onDialogClick1();
+                    }
+                return false;
+            }
+        });
+
+        popupMenu.show();
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -730,9 +756,33 @@ public class MainActivity extends AppCompatActivity {
         btn15.setOnClickListener(lisenter);
         btn16.setOnClickListener(lisenter);
         btn17.setOnClickListener(lisenter);
+        btn17. setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this,radiobutton.class);
+                startActivity(intent);
+                Toast.makeText(getApplicationContext(),"就是换个背景。。。",Toast.LENGTH_LONG).show();
+                finish();
+                return false;
+            }
+
+        });
         btn18.setOnClickListener(lisenter);
+        btn18. setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                showPopupMenu(btn18);
+                return false;
+            }
+
+        });
         editText = (EditText)findViewById(R.id.editviewdavid);//与XML中定义好的EditText控件绑定
         textView = (TextView)findViewById(R.id.textviewdavid);//与XML中定义好的TextView控件绑定
+        registerForContextMenu(editText);
+
 
 
 
