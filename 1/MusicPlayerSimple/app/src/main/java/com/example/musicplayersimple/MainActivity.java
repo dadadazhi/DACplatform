@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     int Flag = 1;
@@ -34,12 +35,10 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intentBroadcat) {
             if (intentBroadcat.hasExtra("state")){
                 if (intentBroadcat.getIntExtra("state", 0) == 0){
-                    textView.setText("耳机未连接");
-                    textView.setTextColor(Color.parseColor("#FF0000"));
+                    Toast.makeText(getApplicationContext(),"耳机已拔出",Toast.LENGTH_LONG).show();
                 }
                 else if (intentBroadcat.getIntExtra("state", 0) == 1){
-                    textView.setText("耳机已连接");
-                    textView.setTextColor(Color.parseColor("#B3993A"));
+                    Toast.makeText(getApplicationContext(),"耳机已插入" ,Toast.LENGTH_LONG).show();
                 }
             }
         }
