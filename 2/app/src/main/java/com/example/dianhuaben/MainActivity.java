@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //使用ListView控件
         ListView listView = (ListView) findViewById(R.id.contacts_view);
-        adapter = new ArrayAdapter<String>(this, android.R.layout. simple_list_item_1, contactsList);//适配器：simple_list_item_1（单行显示）
+        PeopleAdapter adapter  = new PeopleAdapter(MainActivity.this, R.layout.people_item, contactsList);//适配器：simple_list_item_1（单行显示）
         listView.setAdapter(adapter);
         //申请权限
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
