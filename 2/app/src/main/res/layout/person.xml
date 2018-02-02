@@ -4,7 +4,24 @@
     android:stretchColumns="*"
     android:layout_height="match_parent"
     >
-
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:gravity="right"
+        android:textSize="60sp"
+        android:textColor="#000"
+        android:text=""
+        android:background="@null"/>
+    <TextView
+        android:id="@+id/number"
+        android:layout_width="wrap_content"
+        android:layout_height="90dp"
+        android:gravity="right"
+        android:textSize="60sp"
+        android:textColor="#000"
+        android:text=""
+        android:background="@null"/>
 
 
 
