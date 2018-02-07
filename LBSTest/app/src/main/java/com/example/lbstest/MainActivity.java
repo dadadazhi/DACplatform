@@ -121,10 +121,10 @@ public class MainActivity extends AppCompatActivity {
         option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
         mLocationClient.setLocOption(option);
     }*/
-    private void  requestLocation(){
-        /*initLocation();
-        Log.d("map requestLocation:","Run requestLocation ...");*/
-        mLocationClient.start();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mLocationClient.stop();//程序退出的时候，关闭我的位置显示功能
     }
     /*private void navigateTo(BDLocation location) {
         if (isFirstLocate) {
@@ -165,13 +165,21 @@ public class MainActivity extends AppCompatActivity {
 
     public class MylocationListener implements BDLocationListener {
         @Override
-        public void onReceiveLocation( BDLocation location) {
+        public void onReceiveLocation(final BDLocation location) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     StringBuilder currentPosition = new StringBuilder();
                     currentPosition.append("[经度]").append(location.getLongitude()).append("\n");
-                    currentPosition.append("[维度]").append(location.getLatitude()).append("\n");
+                    currentPosition.append("[纬度]").append(location.getLatitude()).append("\n");
+                    currentPosition.append("定位方式：");
+                    if(location.getLocType()==BDLocation.TypeGpsLocation){
+                        currentPosition.append("GPS");
+
+                    }
+                    else if (location.getLocType()==BDLocation.TypeNetWorkLocation){
+                        currentPosition.append("网络");
+                    }
                     positionText.setText((currentPosition));
 
                 }
@@ -180,6 +188,15 @@ public class MainActivity extends AppCompatActivity {
         public void onConnectHotSpotMessage(String s,int i)
         {}
 
+    }
+    private void requestLocation(){
+        initLocation();
+        mLocationClient.start();
+    }
+    private  void initLocation(){
+        LocationClientOption option=new LocationClientOption();
+        option.setScanSpan(5000);
+        mLocationClient.setLocOption(option);
     }
 
             /*inal StringBuilder currentPosition = new StringBuilder();
