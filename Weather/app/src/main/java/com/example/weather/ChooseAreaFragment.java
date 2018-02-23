@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.weather.db.City;
 import com.example.weather.db.County;
@@ -69,6 +70,7 @@ public class ChooseAreaFragment extends Fragment {
             public void onItemClick(AdapterView parent, View view, int position, long id) {
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provinceList.get(position);
+                    queryCities();
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCities();
@@ -115,8 +117,7 @@ public class ChooseAreaFragment extends Fragment {
             titleText.setText (selectedProvince.getProvinceName( ));
             backButton.setVisibility(View.VISIBLE) ;
             cityList= DataSupport.where ("provinceid = ?",String.valueOf(selectedProvince.getId ( )) ).find(City.class) ;
-        if
-        (cityList.size() > 0) {
+        if (cityList.size() > 0) {
         dataList.clear ();
         for (City city: cityList) {
             dataList.add(city.getCityName());
@@ -139,8 +140,8 @@ public class ChooseAreaFragment extends Fragment {
             dataList.clear();
             for (County county : countyList) {
                 dataList.add(county.getCountyName());
-                adapter.notifyDataSetChanged();
             }
+            adapter.notifyDataSetChanged();
             listView.setSelection(0);
             currentLevel = LEVEL_COUNTY;
         } else {
@@ -153,18 +154,6 @@ public class ChooseAreaFragment extends Fragment {
     private void queryFromServer(String address,final String type){
         showProgressDialog();
         HttpUtil.sendOkHtpRequest(address, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //通过 runOnUIThread（）的方法回到主线程处理逻辑
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        closeProgressDialog();
-
-                    }
-                });
-            }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText=response.body().string();
@@ -193,6 +182,18 @@ public class ChooseAreaFragment extends Fragment {
                         }
                     });
                 }
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                //通过 runOnUIThread（）的方法回到主线程处理逻辑
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
