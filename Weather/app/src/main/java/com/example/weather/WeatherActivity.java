@@ -55,8 +55,9 @@ public class WeatherActivity extends AppCompatActivity {
         String weatherString = prefs.getString("weather", null);
         if (weatherString != null) {
             //有缓存时直接解析天气数据
-            Weather weather = Utility.handleWeatherResponse(weatherString);
-            showWeatherInfo(weather);
+            String weatherId = getIntent().getStringExtra("weather_id");
+            wetherLayout.setVisibility(View.INVISIBLE);
+            requestWeather(weatherId);
         } else {
             //无缓存时去服务器查询
             String weatherId = getIntent().getStringExtra("weather_id");
@@ -103,20 +104,8 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void requestWeather(String weatherId) {
-        String weatherUrl = "http:guolin.tech/api/weather?cityid=" + weatherId + "&key9d4cf0c198a840cc95642b28e32c5a58";
+        String weatherUrl = "https://free-api.heweather.com/s6/weather?&location=" + weatherId + "&key=9d4cf0c198a840cc95642b28e32c5a58";
         HttpUtil.sendOkHtpRequest(weatherUrl, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(WeatherActivity.this, "获取天气失败", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 final String resposeText = response.body().string();
@@ -132,6 +121,16 @@ public class WeatherActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(WeatherActivity.this, "获取天气失败", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                });
+            }
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(WeatherActivity.this, "获取天气失败", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
