@@ -3,6 +3,7 @@ package com.example.weather.util;
 import android.text.TextUtils;
 
 import com.example.weather.db.City;
+import com.example.weather.db.County;
 import com.example.weather.db.Province;
 import com.example.weather.gson.Weather;
 import com.google.gson.Gson;
@@ -45,10 +46,11 @@ public class Utility {
                 JSONArray allCounties = new JSONArray(response);
                 for (int i = 0; i < allCounties.length(); i++) {
                     JSONObject county0bject = allCounties.getJSONObject(i);
-                    Province province = new Province();
-                    province.setProvinceName(county0bject.getString("name"));
-                    province.setProvinceCode(county0bject.getInt(" id"));
-                    province.save();
+                    County county = new County();
+                    county.setCountyName(county0bject.getString("name"));
+                    county.setWeatherId(county0bject.getString("weather_id"));
+                    county.setCityId(cityId);
+                    county.save();
                 }
                 return true;
             } catch (JSONException e) {
@@ -67,7 +69,8 @@ public class Utility {
                     JSONObject city0bject = allCities.getJSONObject(i);
                     City city = new City();
                     city.setCityName(city0bject.getString("name"));
-                    city.setCityCode(city0bject.getInt(" id"));
+                    city.setCityCode(city0bject.getInt("id"));
+                    city.setProvinceId(provinceId);
                     city.save();
                 }
                 return true;

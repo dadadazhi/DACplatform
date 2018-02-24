@@ -38,7 +38,6 @@ public class ChooseAreaFragment extends Fragment {
     public static final int LEVEL_PROVINCE = 0;
     public static final int LEVEL_CITY = 1;
     public static final int LEVEL_COUNTY = 2;
-    private static final String TAG = "logdemo";
     private ProgressDialog progressDialog;
     private TextView titleText;
     private Button backButton;
@@ -74,7 +73,7 @@ public class ChooseAreaFragment extends Fragment {
                     queryCities();
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
-                    queryCities();
+                    queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String weatherId = countyList.get(position).getWeatherId();
                     Intent intent = new Intent(getActivity(), WeatherActivity.class);
@@ -128,7 +127,7 @@ public class ChooseAreaFragment extends Fragment {
         listView.setSelection(0) ;
         currentLevel = LEVEL_CITY;
     }else {
-        int provinceCode = selectedProvince.getProvinceCode( );
+            int provinceCode = selectedProvince.getProvinceCode();
         String address="http://guolin.tech/api/china/"+provinceCode;
         queryFromServer(address,"city");
 
