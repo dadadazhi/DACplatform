@@ -32,7 +32,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.ViewHold
         mHourlyList=hourlyList;
     }
     @Override
-    public ViewHolder OnCreateViewHolder(ViewGroup parent,int viewType){
+    public ViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.houly_item,parent,false);
         ViewHolder holder=new ViewHolder(view);
         return holder;
