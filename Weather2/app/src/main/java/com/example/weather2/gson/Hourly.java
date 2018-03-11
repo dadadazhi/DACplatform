@@ -13,4 +13,8 @@ public class Hourly {
     public String htmp;
     @SerializedName("cond_text")
     public String hcond;
+    public Hourly (String hcond,String htmp){
+        this.hcond=hcond;
+        this.htmp=htmp;
+    }
 }

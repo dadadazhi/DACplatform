@@ -10,6 +10,8 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +24,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.weather2.gson.Forecast;
+import com.example.weather2.gson.Hourly;
 import com.example.weather2.gson.Suggestion;
 import com.example.weather2.gson.Weather;
 import com.example.weather2.service.AutoUpdateService;
@@ -29,6 +32,8 @@ import com.example.weather2.util.HttpUtil;
 import com.example.weather2.util.Utility;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -40,8 +45,6 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView degreeText;
     private TextView weatherInfoText;
     private LinearLayout forecastLayout;
-    private TextView dirText;
-    private TextView scText;
     private TextView comfortText;
     private TextView carWashText;
     private TextView sportText;
@@ -50,6 +53,8 @@ public class WeatherActivity extends AppCompatActivity {
     public SwipeRefreshLayout swipeRefresh;
     private String mWeatherId;
     private ImageView bingPicImg;
+    private RecyclerView mRecyclerView;
+    private List<Hourly> weatherList = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -68,8 +73,6 @@ public class WeatherActivity extends AppCompatActivity {
         degreeText = findViewById(R.id.degree_text);
         weatherInfoText = findViewById(R.id.weather_info_text);
         forecastLayout = findViewById(R.id.forecast_layout);
-        dirText = findViewById(R.id.aqi_text);
-        scText = findViewById(R.id.pm25_text);
         comfortText = findViewById(R.id.comfort_text);
         carWashText = findViewById(R.id.car_wash_text);
         sportText = findViewById(R.id.sport_text);
@@ -131,8 +134,15 @@ public class WeatherActivity extends AppCompatActivity {
             minText.setText(forecast.min);
             forecastLayout.addView(view);
         }
-        dirText.setText(weather.now.winddir);
-        scText.setText(weather.now.windsc);
+        for(Hourly hourly: weather.hourlyList){
+            weatherList.add(new Hourly(hourly.htmp,hourly.hcond));
+        }
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mRecyclerView.setLayoutManager(layoutManager);
+        WeatherAdapter adapter =new WeatherAdapter(weatherList);
+        mRecyclerView.setAdapter(adapter);
         for(Suggestion suggestion:weather.suggestionList)
         {
             if("comf".equals(suggestion.type))

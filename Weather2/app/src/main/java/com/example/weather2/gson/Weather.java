@@ -18,4 +18,6 @@ public class Weather {
     public List<com.example.weather2.gson.Forecast> forecastList;
     @SerializedName("lifestyle")
     public List<com.example.weather2.gson.Suggestion> suggestionList;
+    @SerializedName("hourly")
+    public List<com.example.weather2.gson.Hourly> hourlyList;
 }
